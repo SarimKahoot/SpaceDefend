@@ -6,8 +6,10 @@ screen = pygame.display.set_mode(size)
 
 
 space_bg = pygame.image.load("spacebg.png")
-
-s = Ship(300, 680)
+base = pygame.image.load("base.PNG")
+enemy_bullet = pygame.image.load("enemy_bullet.png")
+bullet_blue = pygame.image.load("bullet_blue.PNG")
+s = Ship(250, 500)
 run = True
 
 while run:
@@ -23,6 +25,8 @@ while run:
 
     screen.blit(space_bg, (0, 0))
     screen.blit(s.image, s.rect)
+    screen.blit(bullet_blue, (s.x + 48, s.y))
+    screen.blit(base, (-130, 600))
     pygame.display.update()
 
 

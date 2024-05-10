@@ -9,7 +9,7 @@ class BlueBullet:
         self.image = pygame.image.load("bullet_blue.PNG")
         self.image_size = self.image.get_size()
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
-        self.delta = 2.3
+        self.delta = 5
 
     def move(self):
         self.y = self.y - self.delta

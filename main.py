@@ -15,6 +15,7 @@ run = True
 clicked = False
 b_bullet_blitted = False
 off_screen = False
+reseted = False
 while run:
     keys = pygame.key.get_pressed()  # checking pressed keys
     if keys[pygame.K_d]:
@@ -29,19 +30,25 @@ while run:
         if event.type == pygame.MOUSEBUTTONDOWN:
             clicked = True
 
+    if clicked == False:
+        bb = BlueBullet(s.x + 48, s.y)
     screen.blit(space_bg, (0, 0))
     screen.blit(s.image, s.rect)
     if clicked == True:
-        if off_screen == False:
+        if off_screen == False or reseted == True:
             screen.blit(bb.image, bb.rect)
-        clicked == False
         b_bullet_blitted = True
-    if b_bullet_blitted == True:
-        bb.move()
-        screen.blit(bb.image, bb.rect)
-    if bb.y < -50:
-        off_screen == True
+        if b_bullet_blitted == True and off_screen == False or reseted == True:
+            bb.move()
+            screen.blit(bb.image, bb.rect)
+    if bb.y < -60:
+        off_screen = True
+        reseted = True
+        clicked = False
         bb = BlueBullet(s.x + 48, s.y)
+        print("off")
+        print(b_bullet_blitted)
+    print(s.x, s.y)
 
     screen.blit(base, (-130, 600))
     pygame.display.update()

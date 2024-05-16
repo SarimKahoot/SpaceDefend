@@ -9,7 +9,7 @@ class EnemyShip:
         self.image = pygame.image.load("enemy_space.png")
         self.image_size = self.image.get_size()
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
-        self.delta = 5.0
+        self.delta = 1.2
 
     def move(self):
         self.y = self.y + self.delta

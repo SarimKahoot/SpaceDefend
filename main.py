@@ -28,12 +28,19 @@ bb_off_screen = False
 reseted = False
 es_collision_bb = False
 es_collision_base = False
+off_screen = False
 while run:
     keys = pygame.key.get_pressed()  # checking pressed keys
     if keys[pygame.K_d]:
-        s.move_direction("right")
+        if s.x < 510:
+            s.move_direction("right")
+        else:
+            s.x = 509
     if keys[pygame.K_a]:
-        s.move_direction("left")
+        if s.x > -10:
+            s.move_direction("left")
+        else:
+            s.x = -9
     if b_bullet_blitted == False:   #so when the bullets not blitted its with the spaceshuttle
         bb = BlueBullet(s.x + 48, s.y)
     for event in pygame.event.get():  # User did something
@@ -41,9 +48,9 @@ while run:
             run = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             clicked = True
-        if bb.rect.colliderect(es):
-            es_collision_bb = True
 
+    if bb.rect.colliderect(es):
+        es_collision_bb = True
 
 
     if clicked == False:
@@ -67,6 +74,16 @@ while run:
     if es_collision_bb == False and es_collision_base == False:
         es.move()
         screen.blit(es.image, es.rect)
+    if es_collision_base == True or es_collision_bb == True:
+        if es_collision_base == True:
+            hp = hp - 10
+        if es_collision_bb == True:
+            es.delta = es.delta + 1.5
+        enemy_x = random.randint(0,570)
+        es = EnemyShip(enemy_x, -70)
+        es_collision_base = False
+        es_collision_bb = False
+
 
 
     screen.blit(base, (-130, 600))

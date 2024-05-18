@@ -16,8 +16,8 @@ hp = 100
 my_font = pygame.font.SysFont('Arial', 30)
 base_hp = my_font.render(str(hp), True, (250, 0, 0))
 
-space_bg = pygame.image.load("spacebg.png")
-base = pygame.image.load("base.PNG")
+space_bg = pygame.image.load("spacebg.PNG")
+base = pygame.image.load("base.png")
 enemy_bullet = pygame.image.load("enemy_bullet.png")
 bullet_blue = pygame.image.load("bullet_blue.PNG")
 s = Ship(250, 500)
@@ -33,10 +33,11 @@ es_collision_bb = False
 es_collision_base = False
 off_screen = False
 game_start = False
+game_end = False
 
 while run:
     keys = pygame.key.get_pressed()  # checking pressed keys
-    if game_start == True:
+    if game_start == True and game_end == False:
         if keys[pygame.K_d]:
             if s.x < 510:
                 s.move_direction("right")
@@ -53,12 +54,15 @@ while run:
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            clicked = True
+            if game_start == True:
+                clicked = True
+        if event.type == pygame.MOUSEBUTTONUP:
+            if start.rect.collidepoint(event.pos):
+                game_start = True
 
     if game_start == True:
         if bb.rect.colliderect(es):
             es_collision_bb = True
-
 
         if clicked == False:
             bb = BlueBullet(s.x + 48, s.y)
@@ -83,7 +87,7 @@ while run:
             screen.blit(es.image, es.rect)
         if es_collision_base == True or es_collision_bb == True:
             if es_collision_base == True:
-                hp = hp - 10
+                hp = hp - 20
             if es_collision_bb == True:
                 es.delta = es.delta + 1.5
             enemy_x = random.randint(0,570)
@@ -92,14 +96,19 @@ while run:
             es_collision_bb = False
 
 
-
         screen.blit(base, (-130, 600))
         my_font = pygame.font.SysFont('Arial', 30)
         base_hp = my_font.render(str(hp), True, (255, 0, 0))
         screen.blit(base_hp, (286, 625))
-    else:
+
+    if hp < 1:
+        game_end = True
+
+    if game_start == False and game_end == False:
         screen.blit(space_bg, (0, 0))
         screen.blit(start.image, start.rect)
+    if game_end == True:
+        screen.blit(space_bg, (0, 0))
 
 
 

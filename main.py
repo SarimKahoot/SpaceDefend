@@ -1,25 +1,31 @@
 import pygame
 import random
+import time
 from spaceship import Ship
 from bullet_blue import BlueBullet
 from enemyship import EnemyShip
 from start_button import Start
-import time
+from boss_ship import BossShip
 size = (600, 680)
 screen = pygame.display.set_mode(size)
 
 pygame.init()
 pygame.font.init()
 
+start_time = time.time()
+start_time = round(start_time, 2)
+
 enemy_x = random.randint(0,570)
 hp = 100
-my_font = pygame.font.SysFont('Arial', 30)
+my_font = pygame.font.SysFont('agencyfb', 30)
 base_hp = my_font.render(str(hp), True, (250, 0, 0))
 
 space_bg = pygame.image.load("spacebg.PNG")
 base = pygame.image.load("base.png")
 enemy_bullet = pygame.image.load("enemy_bullet.png")
 bullet_blue = pygame.image.load("bullet_blue.PNG")
+
+bs = BossShip(250,500)
 s = Ship(250, 500)
 bb = BlueBullet(s.x + 48, s.y)
 es = EnemyShip(enemy_x, -50)
@@ -34,6 +40,8 @@ es_collision_base = False
 off_screen = False
 game_start = False
 game_end = False
+
+print(pygame.font.get_fonts())
 
 while run:
     keys = pygame.key.get_pressed()  # checking pressed keys
@@ -59,6 +67,7 @@ while run:
         if event.type == pygame.MOUSEBUTTONUP:
             if start.rect.collidepoint(event.pos):
                 game_start = True
+                start_time = time.time()
 
     if game_start == True:
         if bb.rect.colliderect(es):
@@ -95,11 +104,20 @@ while run:
             es_collision_base = False
             es_collision_bb = False
 
+        current_time = time.time()
+        current_time = round(current_time, 2)
+        time_pass = current_time - start_time
+        time_pass = round(time_pass, 2)
+        elapsed_time = my_font.render("Time Passed: " + str(time_pass), True, (255, 0, 0))
+
 
         screen.blit(base, (-130, 600))
-        my_font = pygame.font.SysFont('Arial', 30)
+        my_font = pygame.font.SysFont('agencyfb', 30)
         base_hp = my_font.render(str(hp), True, (255, 0, 0))
         screen.blit(base_hp, (286, 625))
+        screen.blit(elapsed_time, (50, 50))
+
+        screen.blit(bs.image, bs.rect)
 
     if hp < 1:
         game_end = True

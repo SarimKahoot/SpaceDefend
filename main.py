@@ -12,8 +12,6 @@ screen = pygame.display.set_mode(size)
 pygame.init()
 pygame.font.init()
 
-start_time = time.time()
-start_time = round(start_time, 2)
 
 enemy_x = random.randint(0,570)
 hp = 100
@@ -24,12 +22,17 @@ space_bg = pygame.image.load("spacebg.PNG")
 base = pygame.image.load("base.png")
 enemy_bullet = pygame.image.load("enemy_bullet.png")
 bullet_blue = pygame.image.load("bullet_blue.PNG")
+boss_incoming = pygame.image.load("bossincoming.png")
 
-bs = BossShip(250,500)
+bs = BossShip(90,-400)
 s = Ship(250, 500)
 bb = BlueBullet(s.x + 48, s.y)
 es = EnemyShip(enemy_x, -50)
 start = Start(160, 400)
+
+bs_appear_start = random.randint(10, 25)
+boss_incoming_time = bs_appear_start - 2
+
 run = True
 clicked = False
 b_bullet_blitted = False
@@ -40,7 +43,7 @@ es_collision_base = False
 off_screen = False
 game_start = False
 game_end = False
-
+game_already_started = False  #to fix gligthc of time restarting
 print(pygame.font.get_fonts())
 
 while run:
@@ -67,7 +70,9 @@ while run:
         if event.type == pygame.MOUSEBUTTONUP:
             if start.rect.collidepoint(event.pos):
                 game_start = True
-                start_time = time.time()
+                if game_already_started == False:
+                    start_time = time.time()
+                game_already_started = True
 
     if game_start == True:
         if bb.rect.colliderect(es):
@@ -105,11 +110,19 @@ while run:
             es_collision_bb = False
 
         current_time = time.time()
-        current_time = round(current_time, 2)
         time_pass = current_time - start_time
         time_pass = round(time_pass, 2)
         elapsed_time = my_font.render("Time Passed: " + str(time_pass), True, (255, 0, 0))
-
+        print(current_time)
+        print(f"Start is : {start_time}")
+        print(time_pass)
+        if time_pass > boss_incoming_time and time_pass < bs_appear_start:
+            screen.blit(boss_incoming, (50, 100))
+            print("true")
+        if time_pass > bs_appear_start:
+            screen.blit(bs.image, bs.rect)
+            bs.move()
+            print("xtrue")
 
         screen.blit(base, (-130, 600))
         my_font = pygame.font.SysFont('agencyfb', 30)

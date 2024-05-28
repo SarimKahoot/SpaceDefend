@@ -15,6 +15,7 @@ pygame.font.init()
 
 enemy_x = random.randint(0,570)
 hp = 100
+bs_hp = 100
 my_font = pygame.font.SysFont('agencyfb', 30)
 base_hp = my_font.render(str(hp), True, (250, 0, 0))
 
@@ -30,7 +31,7 @@ bb = BlueBullet(s.x + 48, s.y)
 es = EnemyShip(enemy_x, -50)
 start = Start(160, 400)
 
-bs_appear_start = random.randint(10, 25)
+bs_appear_start = random.randint(1, 10)
 boss_incoming_time = bs_appear_start - 2
 
 run = True
@@ -102,10 +103,10 @@ while run:
         if es_collision_base == True or es_collision_bb == True:
             if es_collision_base == True:
                 hp = hp - 20
-            if es_collision_bb == True:
-                es.delta = es.delta + 1.5
             enemy_x = random.randint(0,570)
             es = EnemyShip(enemy_x, -70)
+            if es_collision_bb == True:
+                es.delta = es.delta + 1.5
             es_collision_base = False
             es_collision_bb = False
 
@@ -113,16 +114,17 @@ while run:
         time_pass = current_time - start_time
         time_pass = round(time_pass, 2)
         elapsed_time = my_font.render("Time Passed: " + str(time_pass), True, (255, 0, 0))
-        print(current_time)
-        print(f"Start is : {start_time}")
-        print(time_pass)
         if time_pass > boss_incoming_time and time_pass < bs_appear_start:
-            screen.blit(boss_incoming, (50, 100))
-            print("true")
+            screen.blit(boss_incoming, (30, 100))
+
         if time_pass > bs_appear_start:
-            screen.blit(bs.image, bs.rect)
-            bs.move()
-            print("xtrue")
+            if bs_hp > 0:
+                screen.blit(bs.image, bs.rect)
+                bs.move()
+            if bs.rect.colliderect(bb):
+                bs_hp = bs_hp - 50
+
+
 
         screen.blit(base, (-130, 600))
         my_font = pygame.font.SysFont('agencyfb', 30)
@@ -131,6 +133,7 @@ while run:
         screen.blit(elapsed_time, (50, 50))
 
         screen.blit(bs.image, bs.rect)
+        print(bs_hp)
 
     if hp < 1:
         game_end = True

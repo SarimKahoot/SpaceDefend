@@ -27,7 +27,7 @@ boss_incoming = pygame.image.load("bossincoming.png")
 
 bs = BossShip(90,-400)
 s = Ship(250, 500)
-bb = BlueBullet(s.x + 48, s.y)
+bb = BlueBullet(s.x + 48, s.y+50)
 es = EnemyShip(enemy_x, -50)
 start = Start(160, 400)
 
@@ -61,7 +61,7 @@ while run:
             else:
                 s.x = -9
         if b_bullet_blitted == False:   #so when the bullets not blitted its with the spaceshuttle
-            bb = BlueBullet(s.x + 48, s.y)
+            bb = BlueBullet(s.x + 48, s.y+50)
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
@@ -80,7 +80,7 @@ while run:
             es_collision_bb = True
 
         if clicked == False:
-            bb = BlueBullet(s.x + 48, s.y)
+            bb = BlueBullet(s.x + 48, s.y+50)
         screen.blit(space_bg, (0, 0))
         screen.blit(s.image, s.rect)
         if clicked == True:
@@ -94,7 +94,7 @@ while run:
             off_screen = True
             reseted = True
             clicked = False
-            bb = BlueBullet(s.x + 48, s.y)
+            bb = BlueBullet(s.x + 48, s.y + 50)
         if es.y > 570:
             es_collision_base = True
         if es_collision_bb == False and es_collision_base == False:
@@ -115,14 +115,19 @@ while run:
         time_pass = round(time_pass, 2)
         elapsed_time = my_font.render("Time Passed: " + str(time_pass), True, (255, 0, 0))
         if time_pass > boss_incoming_time and time_pass < bs_appear_start:
-            screen.blit(boss_incoming, (30, 100))
+            screen.blit(boss_incoming, (10, 100))
 
         if time_pass > bs_appear_start:
             if bs_hp > 0:
                 screen.blit(bs.image, bs.rect)
                 bs.move()
-            if bs.rect.colliderect(bb):
-                bs_hp = bs_hp - 50
+                if bs.rect.colliderect(bb):
+                    if b_bullet_blitted == True:
+                        bs_hp = bs_hp - 10
+                    off_screen = True
+                    reseted = True
+                    clicked = False
+                    bb = BlueBullet(s.x + 48, s.y+50)
 
 
 
@@ -132,8 +137,6 @@ while run:
         screen.blit(base_hp, (286, 625))
         screen.blit(elapsed_time, (50, 50))
 
-        screen.blit(bs.image, bs.rect)
-        print(bs_hp)
 
     if hp < 1:
         game_end = True

@@ -115,7 +115,7 @@ while run:
         time_pass = round(time_pass, 2)
         elapsed_time = my_font.render("Time Passed: " + str(time_pass), True, (255, 0, 0))
         if time_pass > boss_incoming_time and time_pass < bs_appear_start:
-            screen.blit(boss_incoming, (10, 100))
+            screen.blit(boss_incoming, (0, 100))
 
         if time_pass > bs_appear_start:
             if bs_hp > 0:

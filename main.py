@@ -6,6 +6,7 @@ from bullet_blue import BlueBullet
 from enemyship import EnemyShip
 from start_button import Start
 from boss_ship import BossShip
+from red_bullet import RedBullet
 size = (600, 680)
 screen = pygame.display.set_mode(size)
 
@@ -21,7 +22,7 @@ base_hp = my_font.render(str(hp), True, (250, 0, 0))
 
 space_bg = pygame.image.load("spacebg.PNG")
 base = pygame.image.load("base.png")
-enemy_bullet = pygame.image.load("enemy_bullet.png")
+enemy_bullet = pygame.image.load("red_bullet.png")
 bullet_blue = pygame.image.load("bullet_blue.PNG")
 boss_incoming = pygame.image.load("bossincoming.png")
 
@@ -34,6 +35,7 @@ start = Start(160, 400)
 bs_appear_start = random.randint(1, 10)
 boss_incoming_time = bs_appear_start - 2
 
+space_bar_pressed = False
 run = True
 clicked = False
 b_bullet_blitted = False
@@ -44,6 +46,8 @@ es_collision_base = False
 off_screen = False
 game_start = False
 game_end = False
+spaceb_time = time.time()
+es_collision_rb = False
 game_already_started = False  #to fix gligthc of time restarting
 print(pygame.font.get_fonts())
 
@@ -60,8 +64,14 @@ while run:
                 s.move_direction("left")
             else:
                 s.x = -9
+        if spaceb_time + 15 < time.time():
+            if keys[pygame.K_SPACE]:
+                space_bar_pressed = True
+                rb = RedBullet(s.x + 48, s.y + 50)
+                spaceb_time = time.time()
         if b_bullet_blitted == False:   #so when the bullets not blitted its with the spaceshuttle
             bb = BlueBullet(s.x + 48, s.y+50)
+
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
@@ -75,10 +85,13 @@ while run:
                     start_time = time.time()
                 game_already_started = True
 
+
+
     if game_start == True:
         if bb.rect.colliderect(es):
             es_collision_bb = True
-
+        if rb.rect.colliderect(es):
+            es_collision_rb = True
         if clicked == False:
             bb = BlueBullet(s.x + 48, s.y+50)
         screen.blit(space_bg, (0, 0))
@@ -100,7 +113,7 @@ while run:
         if es_collision_bb == False and es_collision_base == False:
             es.move()
             screen.blit(es.image, es.rect)
-        if es_collision_base == True or es_collision_bb == True:
+        if es_collision_base == True or es_collision_bb == True or es_collision_rb == True:
             if es_collision_base == True:
                 hp = hp - 20
             enemy_x = random.randint(0,570)
@@ -109,6 +122,11 @@ while run:
                 es.delta = es.delta + 1.5
             es_collision_base = False
             es_collision_bb = False
+
+        if space_bar_pressed == True:
+            rb.move()
+            screen.blit(rb.image, rb.rect)
+
 
         current_time = time.time()
         time_pass = current_time - start_time
@@ -128,6 +146,8 @@ while run:
                     reseted = True
                     clicked = False
                     bb = BlueBullet(s.x + 48, s.y+50)
+
+
 
 
 

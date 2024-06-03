@@ -25,13 +25,14 @@ base = pygame.image.load("base.png")
 enemy_bullet = pygame.image.load("red_bullet.png")
 bullet_blue = pygame.image.load("bullet_blue.PNG")
 boss_incoming = pygame.image.load("bossincoming.png")
+controls = pygame.image.load("controls.png")
 
 bs = BossShip(90,-400)
 s = Ship(250, 500)
 bb = BlueBullet(s.x + 48, s.y+50)
 es = EnemyShip(enemy_x, -50)
 start = Start(160, 400)
-
+rb = RedBullet(1000, 1000)
 bs_appear_start = random.randint(1, 10)
 boss_incoming_time = bs_appear_start - 2
 
@@ -48,6 +49,7 @@ game_start = False
 game_end = False
 spaceb_time = time.time()
 es_collision_rb = False
+bs_collision_base = False
 game_already_started = False  #to fix gligthc of time restarting
 print(pygame.font.get_fonts())
 
@@ -64,7 +66,7 @@ while run:
                 s.move_direction("left")
             else:
                 s.x = -9
-        if spaceb_time + 15 < time.time():
+        if spaceb_time + 1 < time.time():
             if keys[pygame.K_SPACE]:
                 space_bar_pressed = True
                 rb = RedBullet(s.x + 48, s.y + 50)
@@ -109,7 +111,9 @@ while run:
             clicked = False
             bb = BlueBullet(s.x + 48, s.y + 50)
         if es.y > 570:
-            es_collision_base = True
+            es_collision_base = True      #if past base cords
+        if bs.y > 420:
+            bs_collision_base = True
         if es_collision_bb == False and es_collision_base == False:
             es.move()
             screen.blit(es.image, es.rect)
@@ -118,10 +122,11 @@ while run:
                 hp = hp - 20
             enemy_x = random.randint(0,570)
             es = EnemyShip(enemy_x, -70)
-            if es_collision_bb == True:
+            if es_collision_bb == True or es_collision_rb == True:
                 es.delta = es.delta + 1.5
             es_collision_base = False
             es_collision_bb = False
+            es_collision_rb = False
 
         if space_bar_pressed == True:
             rb.move()
@@ -137,8 +142,11 @@ while run:
 
         if time_pass > bs_appear_start:
             if bs_hp > 0:
-                screen.blit(bs.image, bs.rect)
-                bs.move()
+                if bs_collision_base == False:
+                    screen.blit(bs.image, bs.rect)
+                    bs.move()
+                else:
+                    game_end = True
                 if bs.rect.colliderect(bb):
                     if b_bullet_blitted == True:
                         bs_hp = bs_hp - 10
@@ -146,6 +154,8 @@ while run:
                     reseted = True
                     clicked = False
                     bb = BlueBullet(s.x + 48, s.y+50)
+                if bs.rect.colliderect(rb):
+                    bs_hp = bs_hp - 50
 
 
 
@@ -164,6 +174,7 @@ while run:
     if game_start == False and game_end == False:
         screen.blit(space_bg, (0, 0))
         screen.blit(start.image, start.rect)
+        screen.blit(controls, (160, 100))
     if game_end == True:
         screen.blit(space_bg, (0, 0))
 

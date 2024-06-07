@@ -7,6 +7,7 @@ from enemyship import EnemyShip
 from start_button import Start
 from boss_ship import BossShip
 from red_bullet import RedBullet
+from yenemyship import YenemyShip
 size = (600, 680)
 screen = pygame.display.set_mode(size)
 
@@ -15,11 +16,12 @@ pygame.font.init()
 
 
 enemy_x = random.randint(0,570)
+yenemy_x = random.randint(0, 570)
 hp = 100
 bs_hp = 100
 my_font = pygame.font.SysFont('agencyfb', 30)
 base_hp = my_font.render(str(hp), True, (250, 0, 0))
-
+x = 0
 space_bg = pygame.image.load("spacebg.PNG")
 base = pygame.image.load("base.png")
 enemy_bullet = pygame.image.load("red_bullet.png")
@@ -31,6 +33,7 @@ bs = BossShip(90,-400)
 s = Ship(250, 500)
 bb = BlueBullet(s.x + 48, s.y+50)
 es = EnemyShip(enemy_x, -50)
+y_es = YenemyShip(yenemy_x, -70)
 start = Start(160, 400)
 rb = RedBullet(1000, 1000)
 bs_appear_start = random.randint(1, 10)
@@ -51,6 +54,9 @@ spaceb_time = time.time()
 es_collision_rb = False
 bs_collision_base = False
 game_already_started = False  #to fix gligthc of time restarting
+y_es_collision_base = False
+y_es_collision_bb = False
+y_es_collision_rb = False
 print(pygame.font.get_fonts())
 
 while run:
@@ -156,6 +162,30 @@ while run:
                     bb = BlueBullet(s.x + 48, s.y+50)
                 if bs.rect.colliderect(rb):
                     bs_hp = bs_hp - 50
+        if time_pass > 10:
+            s.delta = 6.5
+            y_es.move()
+            screen.blit(y_es.image, y_es.rect)
+            if y_es.y > 570:
+                y_es_collision_base = True
+            if y_es.rect.colliderect(bb):
+                y_es_collision_bb = True
+            if y_es.rect.colliderect(rb):
+                y_es_collision_bb = True
+
+            if y_es_collision_bb == False and y_es_collision_base == False:
+                y_es.move()
+                screen.blit(y_es.image, y_es.rect)
+            if y_es_collision_base == True or y_es_collision_bb == True or y_es_collision_rb == True:
+                if y_es_collision_base == True:
+                    hp = hp - 20
+                yenemy_x = random.randint(0, 570)
+                y_es = YenemyShip(yenemy_x, -70)
+                y_es_collision_base = False
+                y_es_collision_bb = False
+                y_es_collision_rb = False
+
+
 
 
 
@@ -177,6 +207,12 @@ while run:
         screen.blit(controls, (160, 100))
     if game_end == True:
         screen.blit(space_bg, (0, 0))
+        if x < 1:
+            time_passsed = time.time() - start_time
+            time_passsed = round(time_passsed, 2)
+            ending_time = my_font.render("Time Survived: " + str(time_passsed) + " seconds", True, (255, 0, 0))
+            x = x + 2
+        screen.blit(ending_time, (150, 300))
 
 
 

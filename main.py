@@ -36,7 +36,7 @@ es = EnemyShip(enemy_x, -50)
 y_es = YenemyShip(yenemy_x, -70)
 start = Start(160, 400)
 rb = RedBullet(1000, 1000)
-bs_appear_start = random.randint(1, 10)
+bs_appear_start = random.randint(13, 25)
 boss_incoming_time = bs_appear_start - 2
 
 space_bar_pressed = False
@@ -72,7 +72,7 @@ while run:
                 s.move_direction("left")
             else:
                 s.x = -9
-        if spaceb_time + 1 < time.time():
+        if spaceb_time + 8 < time.time():
             if keys[pygame.K_SPACE]:
                 space_bar_pressed = True
                 rb = RedBullet(s.x + 48, s.y + 50)
@@ -164,6 +164,7 @@ while run:
                     bs_hp = bs_hp - 50
         if time_pass > 10:
             s.delta = 6.5
+            bb.delta = 12
             y_es.move()
             screen.blit(y_es.image, y_es.rect)
             if y_es.y > 570:
